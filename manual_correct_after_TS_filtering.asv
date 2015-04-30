@@ -35,8 +35,8 @@ scatter(channel2.data(:,2),channel2.data(:,3),1,'red'); % red channel 7,8 for da
 
 %% Select ROI and scatter plot it --> choose area with gold fiducial
 
-upperx=9700; % max(all(:,1));
-lowerx=9300;
+upperx=8600; % max(all(:,1));
+lowerx=8200;
 
 % vx=find(channel1.data(:,1) < upperx & channel1.data(:,1) > lowerx);
 % vxC2=find(channel2.data(:,7) < upperx & channel2.data(:,7) > lowerx);                   % 7,8 for data from PS
@@ -47,8 +47,8 @@ subsetC2=channel2.data(vxC2,2); % 1
 subset(:,2)=channel1(vx,2);
 subsetC2(:,2)=channel2.data(vxC2,3);  % 3
 
-uppery=7300; % max(subset(:,2))
-lowery=6800;
+uppery=4400; % max(subset(:,2))
+lowery=4000;
 
 vy=find(subset(:,2) < uppery & subset(:,2) > lowery);
 vyC2=find(subsetC2(:,2) < uppery & subsetC2(:,2) > lowery);
@@ -108,8 +108,8 @@ scatter(subset2C2(:,1), subset2C2(:,2),1,'red')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-xOff= -50;
-yOff= -70;
+xOff= 0;
+yOff= 0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 

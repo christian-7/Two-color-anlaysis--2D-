@@ -22,8 +22,10 @@ all1(:,2)=pix.*channel2Cor(:,2);
 
 %% Open both channel localizations
 
-filename_peaks1='Man_Corr_FOV4_Gain300_20ms_Red_1_crop_TS_filtered2.txt';                   % manually corrected red channel
-filename_peaks2='FOV4_Gain300_20ms_FarRed_1_crop_TS_filtered_corr.txt';                    % far red channel
+filenameC1='Man_Corr_FOV2_Gain_200_20ms_Red_2_crop_TS_full';             % -->  manually corrected red channel
+filename_peaks1=[filenameC1 '.txt'];
+filenameC2='FOV2_Gain_300_20ms_farRed_1_crop_TS_full_corr';                     % -->  transformed far red channel, i.e. from Trans_2D_after_TS.m
+filename_peaks2=[filenameC2 '.txt'];
 
 peaks1=dlmread(filename_peaks1);  % from manual correction
 peaks2=dlmread(filename_peaks2); 
@@ -65,10 +67,10 @@ scatter(all2(:,1),all2(:,2),1)
 
 %%%%%%%%%%%%%%%%%%%% select region %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-upperx=20; % max(all(:,1));
-lowerx=5;
+upperx=16; % max(all(:,1));
+lowerx=6;
 
-uppery=10; % max(subset(:,2))
+uppery=9; % max(subset(:,2))
 lowery=3;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -117,8 +119,8 @@ d=hist3([subset2nd(:,2), subset2nd(:,1)],[ydim xdim]); % heigth x width
 
 % save both channels
 
-imwrite(c,[filename_peaks1 '.tiff']);
-imwrite(d,[filename_peaks2 '.tiff']);
+imwrite(c,[filenameC1 '_rendered_10nm_pxl.tiff']);
+imwrite(d,[filenameC2 '_rendered_10nm_pxl.tiff']);
 
 
 
@@ -277,7 +279,7 @@ colocalized=length(vx)/length(Ca)
 %% Save results
 
 
-filename = ['CBC_CA_10-100nm_' filename_peaks2 '.txt'];
+filename = ['CBC_CA_10-100nm_' filenameC2 '.txt'];
 
 dlmwrite(filename, Ca)
 
