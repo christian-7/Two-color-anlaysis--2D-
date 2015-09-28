@@ -22,9 +22,9 @@ all1(:,2)=pix.*channel2Cor(:,2);
 
 %% Open both channel localizations
 
-filenameC1='Man_Corr_FOV2_Gain_200_20ms_Red_2_crop_TS_full';             % -->  manually corrected red channel
+filenameC1='Man_Corr_FOV1_Gain300_20ms_Red_1_crop_TS_filtered';             % -->  manually corrected red channel
 filename_peaks1=[filenameC1 '.txt'];
-filenameC2='FOV2_Gain_300_20ms_farRed_1_crop_TS_full_corr';                     % -->  transformed far red channel, i.e. from Trans_2D_after_TS.m
+filenameC2='FOV1_Gain300_20ms_FarRed_1_crop_TS_filtered_corr';                     % -->  transformed far red channel, i.e. from Trans_2D_after_TS.m
 filename_peaks2=[filenameC2 '.txt'];
 
 peaks1=dlmread(filename_peaks1);  % from manual correction
@@ -67,11 +67,11 @@ scatter(all2(:,1),all2(:,2),1)
 
 %%%%%%%%%%%%%%%%%%%% select region %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-upperx=16; % max(all(:,1));
-lowerx=6;
+upperx=15; % max(all(:,1));
+lowerx=10;
 
-uppery=9; % max(subset(:,2))
-lowery=3;
+uppery=10; % max(subset(:,2))
+lowery=5;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -124,15 +124,15 @@ imwrite(d,[filenameC2 '_rendered_10nm_pxl.tiff']);
 
 
 
-%% Calculate NN for clusters a and b within range minD - maxD
+%% Calculate NN for all localizations in a with respect to a and b within range minD - maxD
 
 %%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%
 
 minD=0.01;
 maxD=0.1;
-b=subset1st; % Red channel --> subset1st
-a=subset2nd; % Far Red channel --> subset2nd
+b=subset1st; % Red channel --> subset1st        old:b
+a=subset2nd; % Far Red channel --> subset2nd    old:a
 
 list=minD:0.01:maxD;
 NNab=cell(length(list),2);
@@ -165,8 +165,8 @@ toc
 
 tic
 
-NNab{1,3}=[];
-NNaa{1,3}=[];
+NNab{1,3}=[]; % total number of NN for each distance N_A,B
+NNaa{1,3}=[]; % total number of NN for each distance N_A,A
 
 for index=1:length(NNab)
     
@@ -206,7 +206,7 @@ NNaa2(:,2)=cell2mat(NNaa(:,4));
 toc
 %% Calculate and normalize the localization ditribution for aa and ab
 
-%   1. correct NN for the area of the search cycle
+%   1. correct NN for the area of the search circle
 %   2. normalize by the total number and the largest search area
 
 rmaxab=max(NNab2(:,1));
@@ -252,9 +252,9 @@ Ca=RHO*exp((-D/rmaxab));                    % calculate Ca --> colocalization va
 figure('Position',[100 500 900 250])
 
 subplot(1,2,1)
-scatter(b(:,1),b(:,2),2,'black');
+scatter(b(:,1),b(:,2),1,'black');
 hold on;
-scatter(a(:,1),a(:,2),2,Ca);
+scatter(a(:,1),a(:,2),1,Ca);
 axis([lowerx upperx lowery uppery])
 %axis([0 12.8 0 12.8])
 colormap ('jet')

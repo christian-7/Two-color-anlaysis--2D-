@@ -17,9 +17,9 @@ clear all, close all, clear all, clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-filenameC1='FOV2_Gain_300_20ms_farRed_1_crop_TS_full_corr';          % -->  transformed far red channel, i.e. from Trans_2D_after_TS.m
+filenameC1='FOV2_20ms_gain500_FarRed_1_crop_TS_filtered_corr';          % -->  transformed far red channel, i.e. from Trans_2D_after_TS.m
 filenameC1_2=[filenameC1 '.txt'];
-filenameC2='FOV2_Gain_200_20ms_Red_2_crop_TS_full';                  % -->  red channel
+filenameC2='FOV2_20ms_gain500_Red_1_crop_TS_filtered';                  % -->  red channel
 filenameC2_2=[filenameC2 '.txt'];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -35,8 +35,8 @@ scatter(channel2.data(:,2),channel2.data(:,3),1,'red'); % red channel 7,8 for da
 
 %% Select ROI and scatter plot it --> choose area with gold fiducial
 
-upperx=9700; % max(all(:,1));
-lowerx=9300;
+upperx=10000; % max(all(:,1));
+lowerx=9000;
 
 % vx=find(channel1.data(:,1) < upperx & channel1.data(:,1) > lowerx);
 % vxC2=find(channel2.data(:,7) < upperx & channel2.data(:,7) > lowerx);                   % 7,8 for data from PS
@@ -47,8 +47,8 @@ subsetC2=channel2.data(vxC2,2); % 1
 subset(:,2)=channel1(vx,2);
 subsetC2(:,2)=channel2.data(vxC2,3);  % 3
 
-uppery=7300; % max(subset(:,2))
-lowery=6800;
+uppery=9500; % max(subset(:,2))
+lowery=8500;
 
 vy=find(subset(:,2) < uppery & subset(:,2) > lowery);
 vyC2=find(subsetC2(:,2) < uppery & subsetC2(:,2) > lowery);
@@ -108,8 +108,8 @@ scatter(subset2C2(:,1), subset2C2(:,2),1,'red')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-xOff= -50;
-yOff= -70;
+xOff= 0;
+yOff= 80;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
