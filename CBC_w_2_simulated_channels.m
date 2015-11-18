@@ -2,60 +2,19 @@
 
 % clear all, close all, clear all, clc
 
-function [Ca, RHO,coloc]=CBC_w_simulated_channel(fig,n); 
+function [Ca, RHO,coloc]=CBC_w_2_simulated_channels(fig,n); 
 
 
-%% Load dense channel
+%% Generate 2 channels
 
-filenameC1='FOV1_Gain300_20ms_FarRed_1_crop_TS_filtered_corr';                      % -->  transformed far red channel, i.e. from Trans_2D_after_TS.m
-filename_peaks1=[filenameC1 '.txt'];
-peaks1=dlmread(filename_peaks1);
+upperx=18; % max(all(:,1));
+lowerx=6;
 
-pix=0.001;                      % 0.1 for pxl to ?m -- 0.001 for nm to ?m
-sdx=pix.*nonzeros(peaks1(:,1)); % 3,20 --> rapidStorm 1  --> from analysis_1.m 1 
-sdy=pix.*nonzeros(peaks1(:,2)); % 4,21 --> rapidStorm 3  --> from analysis_1.m 2 
-all1(:,1)=sdx;
-all1(:,2)=sdy;
+uppery=11; % max(subset(:,2))
+lowery=3;
 
-all1=unique(all1,'rows');
-
-if fig==1;
- figure
- scatter(all1(:,1),all1(:,2),1)
-else end
-
-
-%% Select region to analyze colocalization
-
-%%%%%%%%%%%%%%%%%%%% select region %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-upperx=13; % max(all(:,1));
-lowerx=7;
-
-uppery=9; % max(subset(:,2))
-lowery=5;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% First channel
-
-vx=find(all1(:,1) < upperx & all1(:,1) > lowerx);
-subset=all1(vx);
-subset(:,2)=all1(vx,2);
-
-vy=find(subset(:,2) < uppery & subset(:,2) > lowery);
-subset1st=subset(vy);
-subset1st(:,2)=subset(vy,2);
-
-clear subset vx vy
-
-if fig==1;
-figure
-scatter(subset1st(:,1), subset1st(:,2),1,'black'); hold on;
-else end
-
-%% Simulate second channel
+subset1st(:,1) = (upperx-lowerx).*rand(20000,1) + lowerx;
+subset1st(:,2) = (uppery-lowery).*rand(20000,1) + lowery;
 
 n=round(length(subset1st)/n);
 
@@ -65,6 +24,7 @@ sim(:,2) = (uppery-lowery).*rand(n,1) + lowery;
 if fig==1;
 scatter(sim(:,1),sim(:,2),1,'red'); hold on;
 else end
+
 %% %% Calculate NN for all localizations in a with respect to a and b within range minD - maxD
 
 %%%%%%%%%%%%%%%%%%%%

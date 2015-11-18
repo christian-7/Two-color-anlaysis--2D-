@@ -22,14 +22,31 @@ all1(:,2)=pix.*channel2Cor(:,2);
 
 %% Open both channel localizations
 
-filenameC1='Man_Corr_FOV4_Gain300_20ms_Red_1_crop_TS_filtered2';                     % -->  manually corrected red channel
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% from ThunderStorm
+
+filenameC1='FOV1_Gain300_20ms_FarRed_1_crop_TS_filtered_corr';                     % -->  manually corrected red channel
 filename_peaks1=[filenameC1 '.txt'];
-filenameC2='FOV4_Gain300_20ms_FarRed_1_crop_TS_filtered_corr';                      % -->  transformed far red channel, i.e. from Trans_2D_after_TS.m
+filenameC2='FOV1_Gain300_20ms_FarRed_1_crop_TS_filtered_corr';                            % -->  transformed far red channel, i.e. from Trans_2D_after_TS.m
 filename_peaks2=[filenameC2 '.txt'];
 
 peaks1=dlmread(filename_peaks1);  % from manual correction
 peaks2=dlmread(filename_peaks2); 
-% peaks2=dlmread(filename_peaks2,'',2,0); % from auto correction RS output
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% from RapidStorm
+
+filenameC1='Man_Corr_Gain_300_30ms_Red_cell_6_1';                        % -->  manually corrected red channel
+filename_peaks1=[filenameC1 '.txt'];
+filename_peaks='Gain_300_30ms_FarRed_cell_6_1_corr';                    % filename of TS output file
+filename_peaks2=[filename_peaks '.txt'];
+
+peaks1=dlmread(filename_peaks1);
+peaks2=dlmread(filename_peaks2,',',1,0);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%% 256   x 128 pxl    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,11 +66,11 @@ all1=unique(all1,'rows');
 
 % asign second channel
 
+pix=0.001;
 sdx2=pix.*nonzeros(peaks2(:,1));% 3,20 --> rapidStorm 1
-sdy2=pix.*nonzeros(peaks2(:,2));% 4,21 --> rapidStorm 3
+sdy2=pix.*nonzeros(peaks2(:,3));% 4,21 --> rapidStorm 3
 all2(:,1)=sdx2;
 all2(:,2)=sdy2;
-
 all2=unique(all2,'rows');
 
 % plot full dataset
@@ -67,11 +84,11 @@ scatter(all2(:,1),all2(:,2),1)
 
 %%%%%%%%%%%%%%%%%%%% select region %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-upperx=18; % max(all(:,1));
-lowerx=7;
+upperx=15; % max(all(:,1));
+lowerx=5;
 
-uppery=9; % max(subset(:,2))
-lowery=4;
+uppery=20; % max(subset(:,2))
+lowery=5;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -101,8 +118,8 @@ subset2nd(:,2)=subset(vy,2);
 % plot subset of dataset
 
 figure
-scatter(subset1st(:,1), subset1st(:,2),1,'red'); hold on;
-scatter(subset2nd(:,1), subset2nd(:,2),1,'black');
+scatter(subset1st(:,1), subset1st(:,2),1,'red'); hold on;       % Red channel
+scatter(subset2nd(:,1), subset2nd(:,2),1,'black');              % Far Red channel
 
 %% save 2D Histogram of both channels
 
@@ -130,12 +147,12 @@ scatter(subset2nd(:,1), subset2nd(:,2),1,'black');
 %%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%
 
-minD=0.01;      % min radius
-maxD=0.1;       % max radius
+minD=0.025;      % min radius
+maxD=0.25;     % max radius
 a=subset1st;    % Red channel --> subset1st        old:b
 b=subset2nd;    % Far Red channel --> subset2nd    old:a
 
-list=minD:0.01:maxD;
+list=minD:0.0025:maxD;
 NNab=cell(length(list),2);
 NNaa=cell(length(list),2);
 
@@ -226,11 +243,11 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-for index=1:length(NNab);
+for index=1:length(NNab);               % for each distance
 
-for index2=1:length(NNab{index,3});    
+for index2=1:length(NNab{index,3});     % for each localization
 
-    NNab{index,4}(index2,1)=((NNab{index,3}(index2,1))/(NNab{10,3}(index2,1)))*(maxD^2/(NNab{index,2})^2); % -> D ai,b for each point (i)
+    NNab{index,4}(index2,1)=((NNab{index,3}(index2,1))/(NNab{length(list),3}(index2,1)))*(maxD^2/(NNab{index,2})^2); % -> D ai,b for each point (i)
     
 end
 
@@ -240,7 +257,7 @@ for index=1:length(NNaa);
 
 for index2=1:length(NNaa{index,3});    
 
-    NNaa{index,4}(index2,1)=((NNaa{index,3}(index2,1))/(NNaa{10,3}(index2,1)))*(0.01/(NNaa{index,2})^2); % -> D ai,a for each point (i)
+    NNaa{index,4}(index2,1)=((NNaa{index,3}(index2,1))/(NNaa{length(list),3}(index2,1)))*(maxD^2/(NNaa{index,2})^2); % -> D ai,a for each point (i)
 
 end
 
@@ -259,21 +276,20 @@ Ca=zeros(length(NNaa{1,4}),1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 tic
-for index=1:length(NNaa{1,4})
+for index=1:length(NNaa{1,4}); % for all localizations
     
-    Daa=zeros(10,1);
-    Dab=zeros(10,1);
+    Daa=zeros(length(list),1);
+    Dab=zeros(length(list),1);
 
-    for index2=1:length(NNaa)
+    for index2=1:length(NNaa) % for all distances 
         
         Daa(index2,1)=(NNaa{index2,4}(index,1));
         Dab(index2,1)=(NNab{index2,4}(index,1));
         
     end
-    
 
-    RHO(index,1)=corr(Daa,Dab,'Type','Spearman');   % correlate Daa and Dab                        
-    Ca(index,1)=RHO(index)*exp((-D(index)/0.1));    % calculate Ca --> colocalization value for every single localization between -1 and 1
+    RHO(index,1)=corr(Daa,Dab,'Type','Spearman');   % correlate Daa and Dab    
+    Ca(index,1)=RHO(index)*exp((-D(index))/maxD^2);    % calculate Ca --> colocalization value for every single localization between -1 and 1
     
 end
 toc
@@ -286,7 +302,7 @@ subplot(1,2,1)
 scatter(b(:,1),b(:,2),2,'black');
 hold on;
 scatter(a(:,1),a(:,2),2,Ca);
-axis([lowerx upperx lowery uppery])
+% axis([lowerx upperx lowery uppery])
 %axis([0 12.8 0 12.8])
 colormap ('jet')
 colorbar;
@@ -306,6 +322,8 @@ tresh=0;
 vx=find(Ca(:,1) > tresh);
 colocalized=length(vx)/length(Ca)
 
+MeanCa=mean(Ca(~isnan(Ca)))
+RatioRedoverFRed=length(subset1st)/length(subset2nd)
 %% Save results
 
 

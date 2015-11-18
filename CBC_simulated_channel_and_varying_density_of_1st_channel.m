@@ -2,22 +2,28 @@
 
 % clear all, close all, clear all, clc
 
-function [Ca, RHO,coloc]=CBC_w_simulated_channel(fig,n); 
+function [Ca, RHO,coloc]=CBC_simulated_channel_and_varying_density_of_1st_channel(fig,n,m); 
 
 
 %% Load dense channel
 
-filenameC1='FOV1_Gain300_20ms_FarRed_1_crop_TS_filtered_corr';                      % -->  transformed far red channel, i.e. from Trans_2D_after_TS.m
+filenameC1='Channel1_20151020 0916';                      % -->  transformed far red channel, i.e. from Trans_2D_after_TS.m
 filename_peaks1=[filenameC1 '.txt'];
 peaks1=dlmread(filename_peaks1);
 
-pix=0.001;                      % 0.1 for pxl to ?m -- 0.001 for nm to ?m
-sdx=pix.*nonzeros(peaks1(:,1)); % 3,20 --> rapidStorm 1  --> from analysis_1.m 1 
-sdy=pix.*nonzeros(peaks1(:,2)); % 4,21 --> rapidStorm 3  --> from analysis_1.m 2 
-all1(:,1)=sdx;
-all1(:,2)=sdy;
+% pix=0.001;                      % 0.1 for pxl to ?m -- 0.001 for nm to ?m
+% sdx=pix.*nonzeros(peaks1(:,1)); % 3,20 --> rapidStorm 1  --> from analysis_1.m 1 
+% sdy=pix.*nonzeros(peaks1(:,2)); % 4,21 --> rapidStorm 3  --> from analysis_1.m 2 
+% all1(:,1)=sdx;
+% all1(:,2)=sdy;
 
-all1=unique(all1,'rows');
+% all1=unique(all1,'rows');
+
+all1=peaks1(1:length(peaks1)/m,1:end);
+
+pix=0.001;
+all1(:,1)=all1(:,1)*pix;
+all1(:,2)=all1(:,2)*pix;
 
 if fig==1;
  figure

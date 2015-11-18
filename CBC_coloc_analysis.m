@@ -68,9 +68,9 @@ scatter(all2(:,1),all2(:,2),1)
 %%%%%%%%%%%%%%%%%%%% select region %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 upperx=15; % max(all(:,1));
-lowerx=10;
+lowerx=5;
 
-uppery=10; % max(subset(:,2))
+uppery=20; % max(subset(:,2))
 lowery=5;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -129,12 +129,12 @@ imwrite(d,[filenameC2 '_rendered_10nm_pxl.tiff']);
 %%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%
 
-minD=0.01;
-maxD=0.1;
+minD=0.1;%0.01
+maxD=1;%0.1
 b=subset1st; % Red channel --> subset1st        old:b
 a=subset2nd; % Far Red channel --> subset2nd    old:a
 
-list=minD:0.01:maxD;
+list=minD:0.1:maxD;
 NNab=cell(length(list),2);
 NNaa=cell(length(list),2);
 
@@ -255,7 +255,7 @@ subplot(1,2,1)
 scatter(b(:,1),b(:,2),1,'black');
 hold on;
 scatter(a(:,1),a(:,2),1,Ca);
-axis([lowerx upperx lowery uppery])
+% axis([lowerx upperx lowery uppery])
 %axis([0 12.8 0 12.8])
 colormap ('jet')
 colorbar;
